@@ -146,5 +146,80 @@ Question 11
 
 Get the name and city of customers who live in any city where the most 
 number of products are made.
+*/
+
+Select c.name, c.city
+from customers c
+where c.city in
+   (select city
+    from products p
+    group by (p.city)
+    having count(p.city) in
+       (select count(p.city)
+        from products p
+        group by (p.city)
+        order by count(p.city) desc
+        limit 1
+        )
+    );
+
+/*
+Question 12
+
+List the products whose priceUSD is above the average priceUSD.
+*/
+
+Select name
+from products
+group by name
+having avg(priceUSD) > (select avg(priceUSD)
+						from products);
+						
+/*
+Question 13
+
+Show the customer name, pid ordered, and the dollars for all 
+customer orders, sorted by dollars from high to low.
+*/
+
+Select c.name, p.pid, o.dollars
+from customers c, orders o, products p
+where c.cid = o.cid
+and   o.pid = p.pid
+order by dollars desc;
+
+/*
+Question 14
+
+Show all customer names (in order) and their total ordered, 
+and nothing more.  Use coalesce to avoid showing NULLS.
+*/
+
+
+/*
+Question 15
+
+Show the names of all customers who bought products from 
+agents based in New York along with the names of the products 
+they ordered, and the names of the agents who sold it to them.
+*/
+
+Select c.name, p.name, a.name
+from customers c, orders o, products p, agents a
+where a.city = 'New York'
+and   c.cid  = o.cid
+and   o.pid  = p.pid
+and   o.aid  = a.aid;
+
+/*
+Question 16
+
+Write a query to check the accuracy of the dollars column in the 
+Orders table.  This means calculating Orders.dollars from other data 
+in other tables and then comparing those values to the values in 
+Orders.dollars.
 
 */
+
+
+
