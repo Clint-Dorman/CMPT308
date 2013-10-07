@@ -1,5 +1,5 @@
+/* Clint Dorman */
 /* Queries Homework 3 */
-
 /*
 Question 1
 
@@ -195,6 +195,11 @@ Show all customer names (in order) and their total ordered,
 and nothing more.  Use coalesce to avoid showing NULLS.
 */
 
+select c.name, coalesce (sum(o.dollars), 0)
+from customers c left outer join orders o
+   on c.cid = o.cid
+   group by c.cid
+   order by c.name asc;
 
 /*
 Question 15
@@ -221,5 +226,21 @@ Orders.dollars.
 
 */
 
+select o.ordno, o.dollars as "Incorrect",
+   (p.priceUSD * o.qty) - ((p.priceUSD * o.qty) * (c.discount/100)) as "Correct"
+   from orders o, products p, customers c
+   where c.cid = o.cid
+   and   o.pid = p.pid
+   and   o.dollars <> (p.priceUSD * o.qty) - ((p.priceUSD * o.qty) * (c.discount/100));
 
+/*
+Question 17
+
+Create an error in the dollars column of the Orders table so that 
+you can verify your accuracy checking query.
+*/
+
+update orders
+set    dollars = 2000
+where  dollars = 180;
 
